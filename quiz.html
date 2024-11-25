@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App Memon industrial and technical institute</title>
+    <link rel="shortcut icon" href="Capture.PNG" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Sevillana&display=swap');
+        body {
+            background: linear-gradient(315deg, #b8c6b8 0%, #f5f7f7 100%);
+            font-family: "PT Sans", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px 2px rgba(100, 100, 100, 0.1);
+            width: 500px;
+            overflow: hidden;
+        }
+        .quiz-header {
+            padding: 3rem;
+        }
+        h2 { text-align: center; }
+        ul { list-style: none; padding: 0; }
+        ul li { font-size: 1.1rem; margin: 1rem 0; }
+        button {
+            background-color: #03cae4;
+            color: #fff;
+            width: 100%;
+            padding: 1.0rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container" id="quiz">
+        <div class="quiz-header">
+             <h2 id="question">Question Text</h2>
+             <ul>
+                <li><input type="radio" name="answer" id="a" class="answer"><label for="a" id="a_text">Answer</label></li>
+                <li><input type="radio" name="answer" id="b" class="answer"><label for="b" id="b_text">Answer</label></li>
+                <li><input type="radio" name="answer" id="c" class="answer"><label for="c" id="c_text">Answer</label></li>
+                <li><input type="radio" name="answer" id="d" class="answer"><label for="d" id="d_text">Answer</label></li>
+             </ul>
+        </div>
+        <button id="submit">Submit</button>
+    </div>
+    <script>
+        // Add more questions to increase variety
+        const quizData = [
+            { question: "Which Language runs in a web browser?", a: "Java", b: "C", c: "Python", d: "JavaScript", correct: "d" },
+            { question: "What does CSS stand for?", a: "Central Style Sheet", b: "Cascading Style Sheet", c: "Cascading Simple Sheet", d: "Cars SUVs Sailboats", correct: "b" },
+            { question: "What does HTML stand for?", a: "HyperText Markup Language", b: "HyperText Markdown Language", c: "Home Tool Markup Language", d: "Hyper Trainer Machine Language", correct: "a" },
+            { question: "What year was JavaScript launched?", a: "1996", b: "1995", c: "1994", d: "None of the above", correct: "b" },
+            { question: "Who invented Python?", a: "Elon Musk", b: "Dennis Ritchie", c: "Guido van Rossum", d: "Mark Zuckerberg", correct: "c" },
+            { question: "Which tag is used to add an image in HTML?", a: "<img>", b: "<src>", c: "<image>", d: "<pic>", correct: "a" },
+            // Add more questions as needed
+        ];
+
+        // Shuffle questions for a unique experience each time
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const shuffledQuizData = shuffle([...quizData]).slice(0, 4); // Random 4 questions
+        let currentQuiz = 0;
+        let score = 0;
+
+        const questionEl = document.getElementById("question");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+
+        function loadQuiz() {
+            deselectAnswers();
+            const currentQuizData = shuffledQuizData[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+        }
+
+        function deselectAnswers() {
+            document.querySelectorAll(".answer").forEach(el => el.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            document.querySelectorAll(".answer").forEach(el => {
+                if (el.checked) answer = el.id;
+            });
+            return answer;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === shuffledQuizData[currentQuiz].correct) score++;
+                currentQuiz++;
+                if (currentQuiz < shuffledQuizData.length) {
+                    loadQuiz();
+                } else {
+                    const resultContent = `
+                        <h2>You answered ${score}/${shuffledQuizData.length} questions correctly</h2>
+                        <p>${score === shuffledQuizData.length ? "Excellent work! 🎉" : "Well done! 👍 Keep practicing!"}</p>
+                        <p>Designed by Sir Makhdoom Hussain</p>
+                    `;
+                    const newTab = window.open();
+                    newTab.document.write(`
+                        <html>
+                            <head><title>Quiz Result</title></head>
+                            <body><div style="text-align:center; font-family: sans-serif;">${resultContent}</div></body>
+                        </html>
+                    `);
+                    newTab.document.close();
+                }
+            }
+        });
+
+        loadQuiz();
+    </script>
+</body>
+</html>
